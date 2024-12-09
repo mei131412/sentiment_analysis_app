@@ -57,34 +57,90 @@ if menu_choice == "Business Objective":
     st.write("=> Xây dựng mô hình dự đoán giúp Hasaki.vn và các công ty đối tác có thể biết được những phản hồi nhanh chóng của khách hàng về sản phẩm hay dịch vụ (tích cực, tiêu cực hay trung tính), điều này giúp họ cải thiện sản phẩm/ dịch vụ và làm hài lòng khách hàng.")
 
 elif menu_choice == "New Prediction":
-    st.subheader("Select data")
-    input_type = st.radio("Choose input method", ["Input Text", "Upload File"])
-    user_content = None
+        st.subheader("Sentiment Analysis Predictor")
+        
+        # Add a informative description
+        st.markdown("""
+        🔍 **Predict Sentiment of Customer Reviews**
+        - Analyze the emotional tone of text: Positive or Negative
+        - Support for Vietnamese language comments
+        - Works with single text or multiple comments via file upload
+        """)
+        
+        # Add an example section
+        with st.expander("💡 See Example"):
+            st.markdown("""
+            **Example Inputs:**
+            - Positive: "Sản phẩm tuyệt vời, rất hài lòng!"
+            - Negative: "Chất lượng kém, không như mô tả"
+            - Neutral: "Sản phẩm như bình thường"
+            """)
+        
+        input_type = st.radio("Choose Input Method", ["Input Text", "Upload File"], help="Select how you want to input your reviews")
+        user_content = None
 
-    if input_type == "Input Text":
-        user_content = st.text_area("Enter your content:")
-        if user_content.strip():
-            user_content = [user_content]  # Convert to list for processing
+        if input_type == "Input Text":
+            user_content = st.text_area(
+                "Enter your content:", 
+                placeholder="Nhập nhận xét của bạn...",
+                help="Nhập một hoặc nhiều nhận xét để phân tích cảm xúc"
+            )
+            
+            # Add some sample buttons
+            st.markdown("#### Quick Examples:")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🌞 Positive"):
+                    user_content = "Sản phẩm tuyệt vời, rất hài lòng!"
+            with col2:
+                if st.button("🌧️ Negative"):
+                    user_content = "Chất lượng kém, không như mô tả"
 
-    elif input_type == "Upload File":
-        uploaded_file = st.file_uploader("Upload a CSV file", type=["csv", "txt"])
-        if uploaded_file:
-        # Read file as raw text
-            raw_text = uploaded_file.read().decode("utf-8")
-            user_content = raw_text.splitlines()
+            if user_content.strip():
+                user_content = [user_content]  # Convert to list for processing
 
-    # Perform preprocessing and prediction if content exists
-    if user_content:
-        st.write("Processing your input...")
-        processed_content = [
-            preprocess(text, emoji_dict, teen_dict, wrong_lst, stopwords_lst)
-            for text in user_content
-        ]
-        predictions = model.predict(processed_content)
+        elif input_type == "Upload File":
+            uploaded_file = st.file_uploader(
+                "Upload a CSV or TXT file", 
+                type=["csv", "txt"],
+                help="Upload a file with multiple reviews. Each line should be a separate review."
+            )
+            if uploaded_file:
+                # Read file as raw text
+                raw_text = uploaded_file.read().decode("utf-8")
+                user_content = raw_text.splitlines()
 
-        # Display results
-        results_df = pd.DataFrame({"Original Text": user_content, "Prediction": predictions})
-        st.write(results_df, use_container_width=True)
+        # Perform preprocessing and prediction if content exists
+        if user_content:
+            st.write("🔮 Processing your input...")
+            processed_content = [
+                preprocess(text, emoji_dict, teen_dict, wrong_lst, stopwords_lst)
+                for text in user_content
+            ]
+            predictions = model.predict(processed_content)
+
+            # Display results with color coding
+            results_df = pd.DataFrame({"Original Text": user_content, "Prediction": predictions})
+            
+            # Color mapping for predictions
+            def color_prediction(pred):
+                if pred == '😄 Positive':
+                    return 'background-color: #d4edda; color: #155724;'
+                elif pred == '😞 Negative':
+                    return 'background-color: #f8d7da; color: #721c24;'
+            
+            styled_df = results_df.style.apply(lambda x: [color_prediction(val) for val in x], axis=1)
+            
+            st.write("### 📊 Prediction Results")
+            st.dataframe(styled_df, use_container_width=True)
+            
+            # Sentiment Distribution
+            st.write("### 📈 Sentiment Distribution")
+            sentiment_counts = results_df['Prediction'].value_counts()
+            fig, ax = plt.subplots()
+            sentiment_counts.plot(kind='pie', autopct='%1.1f%%', colors=['#2ecc71', '#e74c3c', '#f39c12'], ax=ax)
+            ax.set_title('Overall Sentiment Distribution')
+            st.pyplot(fig)
 
 elif menu_choice == 'Product Analysis':
     def load_data():
