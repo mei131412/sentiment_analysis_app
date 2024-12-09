@@ -73,7 +73,6 @@ elif menu_choice == "New Prediction":
             **Example Inputs:**
             - Positive: "Sản phẩm tuyệt vời, rất hài lòng!"
             - Negative: "Chất lượng kém, không như mô tả"
-            - Neutral: "Sản phẩm như bình thường"
             """)
         
         input_type = st.radio("Choose Input Method", ["Input Text", "Upload File"], help="Select how you want to input your reviews")
