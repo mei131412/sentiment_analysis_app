@@ -133,13 +133,13 @@ elif menu_choice == "New Prediction":
             st.write("### 📊 Prediction Results")
             st.dataframe(styled_df, use_container_width=True)
             
-            # Sentiment Distribution
-            st.write("### 📈 Sentiment Distribution")
-            sentiment_counts = results_df['Prediction'].value_counts()
-            fig, ax = plt.subplots()
-            sentiment_counts.plot(kind='pie', autopct='%1.1f%%', colors=['#2ecc71', '#e74c3c', '#f39c12'], ax=ax)
-            ax.set_title('Overall Sentiment Distribution')
-            st.pyplot(fig)
+            if input_type == "Upload File" and len(user_content) > 1:
+                st.write("### 📈 Sentiment Distribution")
+                sentiment_counts = results_df['Prediction'].value_counts()
+                fig, ax = plt.subplots()
+                sentiment_counts.plot(kind='pie', autopct='%1.1f%%', colors=['#2ecc71', '#e74c3c'], ax=ax)
+                ax.set_title('Overall Sentiment Distribution')
+                st.pyplot(fig)
 
 elif menu_choice == 'Product Analysis':
     def load_data():
