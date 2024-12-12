@@ -29,7 +29,12 @@ with open('vietnamese-stopwords.txt', 'r', encoding="utf8") as file:
 # Load the classification model
 # Load the pipeline or classifier that was trained earlier
 model = joblib.load('model_pipeline.pkl')
-
+# Set page configuration with icon
+st.set_page_config(
+    page_title="Hasaki Sentiment Analysis",
+    page_icon="🛍️",  
+    layout="wide"
+)
 # GUI setup using Streamlit
 st.image('hasaki_banner.jpg', use_container_width=True)
 st.title("Sentiment Analysis with Hasaki.vn")
