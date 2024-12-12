@@ -32,7 +32,7 @@ model = joblib.load('model_pipeline.pkl')
 # Set page configuration with icon
 st.set_page_config(
     page_title="Hasaki Sentiment Analysis",
-    page_icon="🛍️",  
+    page_icon="💄",  
     layout="wide"
 )
 # GUI setup using Streamlit
