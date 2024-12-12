@@ -9,21 +9,21 @@ from wordcloud import WordCloud
 # Example of loading emoji and other dictionaries
 
 # Emoji Dictionary
-with open('emojicon.txt', 'r', encoding="utf8") as file:
+with open('files/emojicon.txt', 'r', encoding="utf8") as file:
     emoji_lst = file.read().split('\n')
     emoji_dict = {key: str(value) for key, value in (line.split('\t') for line in emoji_lst)}
 
 # Teen code Dictionary
-with open('teencode.txt', 'r', encoding="utf8") as file:
+with open('files/teencode.txt', 'r', encoding="utf8") as file:
     teen_lst = file.read().split('\n')
     teen_dict = {key: str(value) for key, value in (line.split('\t') for line in teen_lst)}
 
 # Wrong words list
-with open('wrong-word.txt', 'r', encoding="utf8") as file:
+with open('files/wrong-word.txt', 'r', encoding="utf8") as file:
     wrong_lst = file.read().split('\n')
 
 # Stopwords list
-with open('vietnamese-stopwords.txt', 'r', encoding="utf8") as file:
+with open('files/vietnamese-stopwords.txt', 'r', encoding="utf8") as file:
     stopwords_lst = file.read().split('\n')
 
 # Load the classification model
@@ -35,12 +35,12 @@ st.image('hasaki_banner.jpg', use_container_width=True)
 st.title("Sentiment Analysis with Hasaki.vn")
 
 # Sidebar menu
-menu = ["Build Model","Business Objective", "New Prediction", "Product Analysis"]
+menu = ["Business Objective", "Build Model", "New Prediction", "Product Analysis"]
 menu_choice = st.sidebar.selectbox('Menu', menu)
 
 # Information in Sidebar
 st.sidebar.write("""#### Thành viên thực hiện:
-                 Vũ Trung Kiên & Trần Phương Mai""")
+                 Trần Phương Mai & Vũ Trung Kiên""")
 st.sidebar.write("""#### Giảng viên hướng dẫn: 
                  Khuất Thùy Phương""")
 st.sidebar.write("""#### Thời gian thực hiện: 15/12/2024""")
@@ -501,11 +501,14 @@ elif menu_choice == "Build Model":
     st.markdown('''- Xóa stopwords''')
     st.markdown('''- Xử lý dữ liệu null, trùng''')
     st.markdown('''- Kết quả wordcloud''')
+    st.markdown('<div style="text-align:center;font-size: 30px;color: white">🤩 Wordcloud for positive sentiment </div>', unsafe_allow_html=True)
     st.image('bm_positive_wc.png')
+    st.markdown('<div style="text-align:center;font-size: 30px;color: white">😡 Wordcloud for negative sentiment </div>', unsafe_allow_html=True)
     st.image('bm_negative_wc.png')
 
     st.markdown('''#### 3. Xây dựng mô hình''')
     st.image('bm_model_sel.png')
+
     st.markdown('''#### 4. Ðánh giá mô hình''')
     st.markdown('''- Dùng kỹ thuật cross-validation để đánh giá so sánh hiệu suất của các mô hình cho dữ liệu trên. Kết quả:''')
     st.image('bm_cross_validatioin_rs.png')
