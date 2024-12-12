@@ -9,21 +9,21 @@ from wordcloud import WordCloud
 # Example of loading emoji and other dictionaries
 
 # Emoji Dictionary
-with open('emojicon.txt', 'r', encoding="utf8") as file:
+with open('files/emojicon.txt', 'r', encoding="utf8") as file:
     emoji_lst = file.read().split('\n')
     emoji_dict = {key: str(value) for key, value in (line.split('\t') for line in emoji_lst)}
 
 # Teen code Dictionary
-with open('teencode.txt', 'r', encoding="utf8") as file:
+with open('files/teencode.txt', 'r', encoding="utf8") as file:
     teen_lst = file.read().split('\n')
     teen_dict = {key: str(value) for key, value in (line.split('\t') for line in teen_lst)}
 
 # Wrong words list
-with open('wrong-word.txt', 'r', encoding="utf8") as file:
+with open('files/wrong-word.txt', 'r', encoding="utf8") as file:
     wrong_lst = file.read().split('\n')
 
 # Stopwords list
-with open('vietnamese-stopwords.txt', 'r', encoding="utf8") as file:
+with open('files/vietnamese-stopwords.txt', 'r', encoding="utf8") as file:
     stopwords_lst = file.read().split('\n')
 
 # Load the classification model
@@ -35,7 +35,7 @@ st.image('hasaki_banner.jpg', use_container_width=True)
 st.title("Sentiment Analysis with Hasaki.vn")
 
 # Sidebar menu
-menu = ["Business Objective", "New Prediction", "Product Analysis"]
+menu = ["Build Model","Business Objective", "New Prediction", "Product Analysis"]
 menu_choice = st.sidebar.selectbox('Menu', menu)
 
 # Information in Sidebar
@@ -55,7 +55,7 @@ if menu_choice == "Business Objective":
     st.image("sentiment.jpg")
     st.write("=> Problem/ Requirement: Xây dựng hệ thống dựa trên lịch sử những đánh giá của khách hàng đã có trước đó. Dữ liệu được thu thập từ phần bình luận và đánh giá của khách hàng ở Hasaki.vn.")
     st.write("=> Xây dựng mô hình dự đoán giúp Hasaki.vn và các công ty đối tác có thể biết được những phản hồi nhanh chóng của khách hàng về sản phẩm hay dịch vụ (tích cực, tiêu cực hay trung tính), điều này giúp họ cải thiện sản phẩm/ dịch vụ và làm hài lòng khách hàng.")
-
+    
 elif menu_choice == "New Prediction":
     st.subheader("Sentiment Analysis Predictor")
     
@@ -164,7 +164,6 @@ elif menu_choice == "New Prediction":
             ax.set_title('Overall Sentiment Distribution')
             st.pyplot(fig)
             
-
 elif menu_choice == 'Product Analysis':
     def load_data():
         df_products = pd.read_csv('San_pham_full.csv')
@@ -480,3 +479,41 @@ elif menu_choice == 'Product Analysis':
             st.warning(f"Không tìm thấy sản phẩm nào với từ khóa: {search_keyword}")
     else:
         st.info("👆 Nhập từ khóa để tìm kiếm sản phẩm")
+
+elif menu_choice == "Build Model":
+    st.subheader("Xây dựng mô hình đánh giá")
+    st.markdown('''#### :orange[Sử dụng mô hình machine learning truyền thống để phân tích]''')
+    st.markdown('''#### 1. Thu thập dữ liệu''')
+    st.markdown('''- Dữ liệu là thông tin sản phẩm, khách hàng được thu thập từ website: hasaki.vn, trong mục: Trang điểm. Kết quả:''')
+    st.markdown('''###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1788 sản phẩm mới''')
+    st.markdown('''###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1317 khách hàng mới''')
+    st.markdown('''###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10592 đánh giá mới''')
+    st.markdown('''- Dữ liệu thu thập được lưu dưới định dạng .csv bao gồm: San_pham_full.csv, Khach_hang_full.csv, Danh_gia_full.csv''')
+
+    st.markdown('''#### 2. Tiền xử lý và làm sạch dữ liệu''')
+    st.markdown('''- Tạo cột mới [sentiment] với 2 phân loại: positive và negative, từ cột [so_sao] với: 1-3: Negative và 4-5: Positive. Thống kê số lượng sentiment:''')
+    st.image('bm_sentiment_cnt.png')
+    st.markdown('''###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=> Dữ liệu bị mất cân bằng => xử lý bằng phương pháp SMOTE''')
+    st.markdown('''- Chuyển thành viết thường''')
+    st.markdown('''- Loại bỏ kí tự kéo dài, dấu câu''')
+    st.markdown('''- Xử lý emoji, teencode, từ tiếng Anh, từ sai''')
+    st.markdown('''- Xử lý từ phủ định, từ kép''')
+    st.markdown('''- Xóa stopwords''')
+    st.markdown('''- Xử lý dữ liệu null, trùng''')
+    st.markdown('''- Kết quả wordcloud''')
+    st.image('bm_positive_wc.png')
+    st.image('bm_negative_wc.png')
+
+    st.markdown('''#### 3. Xây dựng mô hình''')
+    st.image('bm_model_sel.png')
+    st.markdown('''#### 4. Ðánh giá mô hình''')
+    st.markdown('''- Dùng kỹ thuật cross-validation để đánh giá so sánh hiệu suất của các mô hình cho dữ liệu trên. Kết quả:''')
+    st.image('bm_cross_validatioin_rs.png')
+    st.markdown('''###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=> Mô hình SVM cho kết quả dự đoán tốt nhất => chọn SVM làm mô hình phân tích cho ứng dụng ''')    
+    st.markdown('''- Chi tiết kết quả khi áp dụng mô hình SVM:''')
+    # st.image('bm_svm_rs.jpg')
+    # st.image('bm_svm_confusion_matrix.png')
+    col1, col2 = st.columns([1, 1])
+    col1.image('bm_svm_rs.jpg')
+    col2.image('bm_svm_confusion_matrix.png')
+
