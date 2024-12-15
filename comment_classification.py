@@ -296,9 +296,10 @@ elif menu_choice == 'Product Analysis':
                     st.markdown(f"""
                         <div style="padding: 10px; border-radius: 5px; background-color: #f0f2f6; margin: 5px 0;">
                             <div style="color: #FFB636;">{"⭐" * int(review.so_sao)}</div>
-                            <div style="margin-top: 5px;">{review.noi_dung_binh_luan}</div>
+                            <div style="margin-top: 5px; color: #000000;">{review.noi_dung_binh_luan}</div>
                         </div>
                     """, unsafe_allow_html=True)
+
 
         except Exception as e:
             st.error(f"❌ Lỗi: {str(e)}")
