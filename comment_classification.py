@@ -511,7 +511,8 @@ elif menu_choice == "Build Model":
     st.image('bm_negative_wc.png')
 
     st.markdown('''#### 3. Xây dựng mô hình''')
-    st.image('bm_model_sel.png')
+    st.markdown('''Sử dụng Over-sampling SMOTE để tạo thêm mẫu Negative nhằm xử lý mất cân bằng dữ liệu.''')
+    st.image('bm_model_sel.jpg')
 
     st.markdown('''#### 4. Ðánh giá mô hình''')
     st.markdown('''- Dùng kỹ thuật cross-validation để đánh giá so sánh hiệu suất của các mô hình cho dữ liệu trên. Kết quả:''')
